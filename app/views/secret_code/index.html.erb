@@ -1,0 +1,57 @@
+<% if current_user.is_admin? %>
+
+<h1>Listing SecretCodes</h1>
+<table class="table table-bordered table-inverse table-hover">
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+   <% @codes.each do |code| %>
+      <tr>
+       <td><%= code.code %></td>
+       <td><%= code.user.email if code.user%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @codes %>
+
+<%else%>
+<table class="table table-bordered table-inverse table-hover">
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+       <td><%= current_user.secret_code.code if current_user.secret_code %></td>
+       <td><%= current_user.email %></td>
+      </tr>
+  </tbody>
+</table>
+
+<%end%>
+<br><br><br><br>
+
+
+<% if can? :create, SecretCode %>
+
+<%= form_tag('/secret_code',method: :post,:html => {:class => 'form-horizontal'}) do %>
+  <fieldset>
+    <legend><h1>Generate SecretCode</h1></legend>
+   <div class="form-group">
+     <label for="inputLastName" class="col-lg-2 control-label">Count</label>
+     <div class="col-lg-10">
+      <%= select_tag("count", options_for_select([1,10,20,50,100], '10'),:class=>"form-control") %>
+     </div>
+   </div>
+    <%= submit_tag 'Submit' ,:class=>"btn btn-primary"%>
+   </fieldset> 
+<% end %>
+
+<%end%>
